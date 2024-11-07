@@ -18,7 +18,7 @@ public interface DAO<T> {
 
 	void remove(Long id);
 
-	Category getById(Long categoryId);
+	T getById(Long categoryId);
 
 	
 }

@@ -12,7 +12,13 @@
 	        <artifactId>jsf-api</artifactId>
 	        <version>2.2.20</version>
 	    </dependency>
-	    
+	     <!-- Javax Persistence API -->
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <version>2.2</version>
+        </dependency>
+
 	    <!-- JSF Implementation to run JSF-based apps -->
 	    <dependency>
 	        <groupId>com.sun.faces</groupId>

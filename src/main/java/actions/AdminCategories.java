@@ -8,9 +8,9 @@ import services.CategoryService;
 
 import java.util.List;
 
-@ManagedBean(name = "categoryAction") // ManagedBean annotation
-@RequestScoped // Define the scope of the bean (request scope)
-public class CategoryAction {
+@ManagedBean(name = "adminCategories") 
+@RequestScoped 
+public class AdminCategories {
     private CategoryService categoryService = new CategoryService();
     
     private List<Category> categories;

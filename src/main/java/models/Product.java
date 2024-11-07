@@ -16,6 +16,7 @@ public class Product implements Serializable {
     private Double price;
     private Long quantity;
     private Long sdr;
+    private String photo;
 
     @ManyToOne
     @JoinColumn(name = "id_category", nullable = false)
@@ -90,7 +91,12 @@ public class Product implements Serializable {
 		return "name : "+name +" price : "+price+" quantity : "+quantity + " sdr : " + sdr;
 	}
 
+	public String getPhoto() {
+		return photo;
+	}
 
-
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
 
 }
