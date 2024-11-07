@@ -1,14 +1,16 @@
 package actions;
 
-import com.opensymphony.xwork2.ActionSupport;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 
 import models.Category;
 import services.CategoryService;
 
 import java.util.List;
 
-public class CategoryAction extends ActionSupport {
-    private static final long serialVersionUID = 1L;
+@ManagedBean(name = "categoryAction") // ManagedBean annotation
+@RequestScoped // Define the scope of the bean (request scope)
+public class CategoryAction {
     private CategoryService categoryService = new CategoryService();
     
     private List<Category> categories;
@@ -16,8 +18,7 @@ public class CategoryAction extends ActionSupport {
     private Long categoryId;
     private String keyword;
 
-
-    // Getter and Setter methods for Struts
+    // Getter and Setter methods
     public List<Category> getCategories() {
         return categories;
     }
@@ -39,50 +40,36 @@ public class CategoryAction extends ActionSupport {
     }
 
     // Action methods
-    public String list() {
+    public void list() {
         categories = categoryService.list();
-        return SUCCESS;
     }
 
-    public String add() {
+    public void add() {
         if (category != null) {
             categoryService.add(category);
-            return SUCCESS;
         }
-        return INPUT;
     }
 
-    public String update() {
+    public void update() {
         if (category != null && category.getId() != null) { 
             categoryService.update(category);
-            return SUCCESS;
         }
-        return INPUT;
     }
 
-    public String updateCategoryFormData() {
+    public void updateCategoryFormData() {
         Category category = categoryService.getById(categoryId);
         setCategory(category); 
-        return SUCCESS;
     }
     
-    public String delete() {
+    public void delete() {
         if (categoryId > 0) {
             categoryService.remove(categoryId);
-            return SUCCESS;
         }
-        return INPUT;
     }
 
-    public String search() {
+    public void search() {
         if (keyword != null && !keyword.isEmpty()) {
             categories = categoryService.selectByKeyword(keyword);
-            return SUCCESS;
         }
-        return INPUT;
-    }
-    @Override
-    public void validate() {
-        // Custom validation logic, if necessary
     }
 }
