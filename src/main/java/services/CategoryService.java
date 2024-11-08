@@ -83,12 +83,10 @@ public class CategoryService implements DAO<Category> {
 	public List<Category> list() {
 		List<Category> CategoriesList = new ArrayList<>();
 		try {
-			System.out.println("list on services");
 			Session session = this.sessionFactory.getCurrentSession();
 			session.beginTransaction();
 			CategoriesList = session.createQuery("select c from Category c", Category.class).list();
 			session.getTransaction().commit();
-			System.out.println("categories list  " + CategoriesList); 
 			return CategoriesList;
 		} catch (Exception e) {
 			System.out.println("Error in getAllCategories\n"+e);

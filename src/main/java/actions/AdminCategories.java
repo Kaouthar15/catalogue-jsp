@@ -2,25 +2,45 @@ package actions;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+//import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 
 import models.Category;
 import services.CategoryService;
 
 import java.util.List;
 @ManagedBean(name = "adminCategories") 
-@RequestScoped 
+@SessionScoped 
 public class AdminCategories {
     private CategoryService categoryService = new CategoryService();
     
     private List<Category> categories;
     private Category category;
-    private Category selectedCategory; // For holding the selected category for delete and update
+    private Category newCategory = new Category();
+    private Category selectedCategory; 
     private Long categoryId;
     private String keyword;
-    private boolean flagAdd = false;
+    private boolean addMode = false;
 
     // Getter and Setter methods
+    public Category getNewCategory() {
+		return newCategory;
+	}
+
+	public void setNewCategory(Category newCategory) {
+		this.newCategory = newCategory;
+	}
+	
+	public boolean isAddMode() {
+		return addMode;
+	}
+
+	public void setAddMode(boolean addMode) {
+		this.addMode = addMode;
+	}
+	public boolean getAddMode() {
+		return addMode;
+	}
     public List<Category> getCategories() {
         return categories;
     }
@@ -48,77 +68,70 @@ public class AdminCategories {
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
+    public Long getCategoryId(Long categoryId) {
+        return this.categoryId;
+    }
 
     public void setKeyword(String keyword) {
         this.keyword = keyword;
     }
 
-    public boolean isFlagAdd() {
-        return flagAdd;
-    }
-
-    public void setFlagAdd(boolean flagAdd) {
-        this.flagAdd = flagAdd;
-    }
 
     // Action methods
     public void list() {
         categories = categoryService.list();
-        System.out.println("list categories method");
+        System.out.println("list" );
     }
-
+    
+    public void onRowSelect() {
+        System.out.println(selectedCategory);
+    }
     @PostConstruct
     public void init() {
         list(); 
     }
 
-    public void add() {
-        if (category != null) {
-            categoryService.add(category);
-        }
-    }
-
-    public void update() {
-        if (category != null && category.getId() != null) { 
-            categoryService.update(category);
-        }
-    }
-
-    public void updateCategoryFormData() {
-        Category category = categoryService.getById(categoryId);
-        setCategory(category); 
-    }
-
+    
+    // delete method
     public void delete() {
-        if (selectedCategory != null && selectedCategory.getId() > 0) {
-            categoryId = selectedCategory.getId();
-            // Show confirmation dialog
+    	if (selectedCategory != null && selectedCategory.getId() > 0) {
+    		categoryService.remove(selectedCategory.getId());
+    		selectedCategory = null;
+            list();  
         }
     }
 
-    public void confirmDelete() {
-        if (categoryId > 0) {
-            categoryService.remove(categoryId);
-            list();  // Refresh the list after deletion
-        }
-    }
-
+    //search method
     public void search() {
         if (keyword != null && !keyword.isEmpty()) {
             categories = categoryService.selectByKeyword(keyword);
         }
     }
 
-    public void enableAddMode() {
-        System.out.println(flagAdd);
-        this.flagAdd = true;
-        System.out.println(flagAdd);
-    }
 
+    //editing methods
     public void edit() {
         if (selectedCategory != null) {
             categoryId = selectedCategory.getId();
-            updateCategoryFormData(); // Populate the form with selected category data
         }
     }
+    public void update() {
+        if (category != null && category.getId() != null) { 
+            categoryService.update(category);
+        }
+    }
+    
+    // adding methods
+    public void enableAddMode() {
+        this.addMode = true;
+        this.setNewCategory(new Category());
+    }
+
+	public void add() {
+            categoryService.add(newCategory); 
+            this.addMode = false;
+            list();
+    }
+
+
 }

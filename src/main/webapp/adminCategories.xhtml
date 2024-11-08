@@ -11,57 +11,87 @@
         <div class="card">
             <h:form id="form">
                 <br />
-                <!-- Data Table -->
+                <!-- Data Table with Radio Button Selection -->
                 <p:dataTable id="listcategorie" var="cat"
                     value="#{adminCategories.categories}" rowKey="#{cat.id}"
                     selectionMode="single" selection="#{adminCategories.selectedCategory}">
-                    
-                    <f:facet name="header">Right Click to View Options</f:facet>
-                    
+
+                    <f:facet name="header">Select a Category</f:facet>
+
+                    <!-- Radio Button Column for Selecting Row -->
+                    <p:column selectionMode="single" style="width: 30px;"/>
+					<p:ajax event="rowSelect" listener="#{adminCategories.onRowSelect}" update=":form" />
+					
+                    <!-- Columns for Category Data -->
                     <p:column headerText="Id">
                         <h:outputText value="#{cat.id}" />
                     </p:column>
-                    <p:column headerText="Nom">
+                    <p:column headerText="Name">
                         <h:outputText value="#{cat.name}" />
                     </p:column>
                     <p:column headerText="Description">
                         <h:outputText value="#{cat.description}" />
                     </p:column>
-                    <p:column headerText="Actions">
-                        <!-- Edit Button -->
-                        <p:commandButton value="Edit" 
-                                         styleClass="ui-button-raised ui-button-primary"
-                                         actionListener="#{adminCategories.edit()}"
-                                         update=":form"
-                                         icon="pi pi-pencil"
-                                         style="margin-right: 5px;" />
-                        <!-- Delete Button -->
-                        <p:commandButton value="Delete" 
-                                         styleClass="ui-button-raised ui-button-danger"
-                                         actionListener="#{adminCategories.delete()}"
-                                         update=":form"
-                                         icon="pi pi-trash"
-                                         style="margin-left: 5px;"
-                                         oncomplete="PF('confirmDelete').show();" />
-                    </p:column>
                 </p:dataTable>
 
-                <!-- Button Outside the DataTable, at the End -->
-                <p:commandButton value="Add"
+                <!-- Action Buttons -->
+                <p:commandButton value="Add" 
                                  styleClass="ui-button-raised ui-button-flat"
                                  actionListener="#{adminCategories.enableAddMode}" 
                                  update=":form" 
                                  style="margin-top: 10px;" />
+
+                <p:commandButton value="Edit" 
+                                 styleClass="ui-button-raised ui-button-primary"
+                                 actionListener="#{adminCategories.edit()}"
+                                 update=":form"
+                                 icon="pi pi-pencil"
+                                 disabled="#{adminCategories.selectedCategory == null}"
+                                 style="margin-left: 10px;" />
+
+                <p:commandButton value="Delete" 
+                                 styleClass="ui-button-raised ui-button-danger"
+                                 action="#{adminCategories.delete}"
+                                 update=":form"
+                                 icon="pi pi-trash"
+                                 disabled="#{adminCategories.selectedCategory == null}"
+                                 style="margin-left: 10px;" />
+                                 <br/>
+                <h:panelGroup rendered="#{adminCategories.addMode}">
+				        <h:outputText value="Add a New Category" styleClass="ui-widget-header" />
+				
+				        <!-- Category Form -->
+				        <h:panelGrid columns="2">
+				            <h:outputLabel for="name" value="Name:" />
+				            <p:inputText id="name" value="#{adminCategories.newCategory.name}" />
+				
+				            <h:outputLabel for="description" value="Description:" />
+				            <p:inputText id="description" value="#{adminCategories.newCategory.description}" />
+				        </h:panelGrid>
+				
+				        <p:commandButton value="Save" 
+				                         action="#{adminCategories.add}" 
+				                         update=":form" 
+				                         styleClass="ui-button-raised ui-button-success" 
+				                         style="margin-top: 10px;" />
+				        <p:commandButton value="Cancel" 
+				                         action="#{adminCategories.setAddMode(false)}" 
+				                         update=":form" 
+				                         styleClass="ui-button-raised ui-button-danger" 
+				                         style="margin-top: 10px;" />
+				    </h:panelGroup>
             </h:form>
         </div>
 
         <!-- Confirm Delete Dialog -->
-        <p:confirmDialog id="confirmDelete" header="Confirm" message="Are you sure you want to delete this category?"
-                         showEffect="fade" hideEffect="fade" modal="true">
-            <p:commandButton value="Yes" actionListener="#{adminCategories.confirmDelete()}" 
-                             update=":form" />
-            <p:commandButton value="No" onclick="PF('confirmDelete').hide()" />
-        </p:confirmDialog>
+<!--         <p:confirmDialog id="confirmDelete" header="Confirm"  -->
+<!--                          message="Are you sure you want to delete this category?" -->
+<!--                          showEffect="fade" hideEffect="fade" modal="true"> -->
+<!--             <p:commandButton value="Yes"  -->
+<!--                              actionListener="#{adminCategories.delete()}"  -->
+<!--                              update=":form" /> -->
+<!--             <p:commandButton value="No" onclick="PF('confirmDelete').hide()" /> -->
+<!--         </p:confirmDialog> -->
 
     </ui:define>
 </ui:composition>
