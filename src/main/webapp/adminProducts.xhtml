@@ -4,129 +4,71 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:p="http://primefaces.org/ui">
+
     <ui:define name="title">List of Products</ui:define>
     <ui:define name="content">
         <!-- Product Table -->
         <div class="card">
             <h:form id="form">
                 <br />
-                <!-- Data Table with Radio Button Selection -->
-                <p:dataTable id="listproducts" var="product"
-                    value="#{adminProducts.products}" rowKey="#{product.id}"
-                    selectionMode="single" selection="#{adminProducts.selectedProduct}"
-                    paginator="true" rows="6" 
-                    paginatorTemplate="{CurrentPageReport}   {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
-
-                    <f:facet name="header">Select a Product</f:facet>
-
-                    <!-- Radio Button Column for Selecting Row -->
+                <!-- Data Table with Product Details -->
+                <p:dataTable id="listProduct" var="prod" value="#{adminProducts.products}"
+                	selectionMode="single" selection="#{adminProducts.selectedProduct}"
+                 	rowKey="#{prod.id}" paginator="true" rows="6"
+                    paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+                    <f:facet name="header">List of Products</f:facet>
+					
+					<!-- Radio Button Column for Selecting Row -->
                     <p:column selectionMode="single" style="width: 30px;"/>
-                    <p:ajax event="rowSelect" listener="#{adminProducts.onRowSelect}" update=":form" />
-                    
+					<p:ajax event="rowSelect" listener="#{adminCategories.onRowSelect}" update=":form" />
+					
                     <!-- Columns for Product Data -->
                     <p:column headerText="Id">
-                        <h:outputText value="#{product.id}" />
+                        <h:outputText value="#{prod.id}" />
                     </p:column>
                     <p:column headerText="Name">
-                        <h:outputText value="#{product.name}" />
+                        <h:outputText value="#{prod.name}" />
+                    </p:column>
+                    <p:column headerText="Price">
+                        <h:outputText value="#{prod.price}" />
+                    </p:column>
+                    <p:column headerText="Quantity">
+                        <h:outputText value="#{prod.quantity}" />
                     </p:column>
                     <p:column headerText="Category">
-                        <h:outputText value="#{product.category.name}" /> <!-- Display Category Name -->
+                        <h:outputText value="#{prod.category.name}" />
                     </p:column>
+                    
                 </p:dataTable>
-
-                <!-- Action Buttons -->
+				                <!-- Action Buttons -->
                 <h:panelGroup styleClass="centered-buttons">
                 <p:commandButton value="Add" 
                                  styleClass="ui-button-raised ui-button-flat"
-                                 actionListener="#{adminProducts.enableAddMode}" 
+                                 actionListener="#{adminCategories.enableAddMode}" 
                                  update=":form" 
                                  style="margin-top: 10px;" />
 
                 <p:commandButton value="Edit" 
                                  styleClass="ui-button-raised ui-button-primary"
-                                 action="#{adminProducts.enableEditMode}"
+                                 action="#{adminCategories.enableEditMode}"
                                  update=":form"
                                  icon="pi pi-pencil"
-                                 disabled="#{adminProducts.selectedProduct == null}"
+                                 disabled="#{adminCategories.selectedCategory == null}"
                                  style="margin-left: 10px;" />
 
                 <p:commandButton value="Delete" 
                                  styleClass="ui-button-raised ui-button-danger"
-                                 action="#{adminProducts.delete}"
+                                 action="#{adminCategories.delete}"
                                  update=":form"
                                  icon="pi pi-trash"
-                                 disabled="#{adminProducts.selectedProduct == null}"
+                                 disabled="#{adminCategories.selectedCategory == null}"
                                  style="margin-left: 10px;" />
                 </h:panelGroup>
-                <br/>
-                <!-- Add Product Form -->
-                <h:panelGroup rendered="#{adminProducts.addMode}">
-                    <h:outputText value="Add a New Product" styleClass="ui-widget-header" />
+                <!-- Add/Edit Product Form -->
+                
 
-                    <!-- Product Form -->
-                    <h:panelGrid columns="2">
-                        <h:outputLabel for="name" value="Name:" />
-                        <p:inputText id="name" value="#{adminProducts.newProduct.name}" />
-
-                        <h:outputLabel for="category" value="Category:" />
-                        <p:selectOneMenu id="category" value="#{adminProducts.newProduct.category}">
-                            <f:selectItem itemLabel="Select a Category" itemValue="#{null}" />
-                            <f:selectItems value="#{adminProducts.categories}" var="cat" itemLabel="#{cat.name}" itemValue="#{cat}" />
-                        </p:selectOneMenu>
-
-                        <h:outputLabel for="price" value="Price:" />
-                        <p:inputText id="price" value="#{adminProducts.newProduct.price}" />
-
-                        <h:outputLabel for="description" value="Description:" />
-                        <p:inputText id="description" value="#{adminProducts.newProduct.description}" />
-                    </h:panelGrid>
-
-                    <p:commandButton value="Save" 
-                                     action="#{adminProducts.add}" 
-                                     update=":form" 
-                                     styleClass="ui-button-raised ui-button-success" 
-                                     style="margin-top: 10px;" />
-                    <p:commandButton value="Cancel" 
-                                     action="#{adminProducts.setAddMode(false)}" 
-                                     update=":form" 
-                                     styleClass="ui-button-raised ui-button-danger" 
-                                     style="margin-top: 10px;" />
-                </h:panelGroup>
-
-                <!-- Edit Product Form -->
-                <h:panelGroup rendered="#{adminProducts.editMode}">
-                    <h:outputText value="Edit The Product" styleClass="ui-widget-header" />
-
-                    <!-- Product Form -->
-                    <h:panelGrid columns="2">
-                        <h:outputLabel for="nameEdited" value="Name:" />
-                        <p:inputText id="nameEdited" value="#{adminProducts.selectedProduct.name}" />
-
-                        <h:outputLabel for="categoryEdited" value="Category:" />
-                        <p:selectOneMenu id="categoryEdited" value="#{adminProducts.selectedProduct.category}">
-                            <f:selectItems value="#{adminProducts.categories}" var="cat" itemLabel="#{cat.name}" itemValue="#{cat}" />
-                        </p:selectOneMenu>
-
-                        <h:outputLabel for="priceEdited" value="Price:" />
-                        <p:inputText id="priceEdited" value="#{adminProducts.selectedProduct.price}" />
-
-                        <h:outputLabel for="descriptionEdited" value="Description:" />
-                        <p:inputText id="descriptionEdited" value="#{adminProducts.selectedProduct.description}" />
-                    </h:panelGrid>
-
-                    <p:commandButton value="Save" 
-                                     action="#{adminProducts.update}" 
-                                     update=":form" 
-                                     styleClass="ui-button-raised ui-button-success" 
-                                     style="margin-top: 10px;" />
-                    <p:commandButton value="Cancel" 
-                                     action="#{adminProducts.setEditMode(false)}" 
-                                     update=":form" 
-                                     styleClass="ui-button-raised ui-button-danger" 
-                                     style="margin-top: 10px;" />
-                </h:panelGroup>
             </h:form>
         </div>
     </ui:define>
 </ui:composition>
+ 
