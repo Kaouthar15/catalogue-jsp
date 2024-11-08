@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "products")
-@NamedQuery(name = "Product.getAll", query = "SELECT p FROM Product p")
+//@NamedQuery(name = "Product.getAll", query = "SELECT p FROM Product p")
 public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -73,15 +73,15 @@
 	    <dependency>
 	        <groupId>org.hibernate</groupId>
 	        <artifactId>hibernate-core</artifactId>
-	        <version>6.2.22.Final</version>
+	        <version>5.6.0.Final</version>
 	    </dependency>
 	    
-	    <!-- MySQL Connector for connecting to MySQL databases -->
-	    <dependency>
-	        <groupId>mysql</groupId>
-	        <artifactId>mysql-connector-java</artifactId>
-	        <version>8.0.33</version>
-	    </dependency>
+	    <!-- MySQL Connector -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
+        </dependency>
 	
 	    <!-- iText for creating PDF documents -->
 	    <dependency>

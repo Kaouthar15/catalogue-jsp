@@ -2,7 +2,6 @@ package services;
 
 import java.util.List;
 
-import models.Category;
 
 
 public interface DAO<T> {

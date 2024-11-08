@@ -1,5 +1,6 @@
 package actions;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 
@@ -44,6 +45,11 @@ public class AdminCategories {
         categories = categoryService.list();
     }
 
+    @PostConstruct
+    public void init() {
+        list(); 
+    }
+    
     public void add() {
         if (category != null) {
             categoryService.add(category);

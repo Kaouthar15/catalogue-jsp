@@ -9,7 +9,8 @@
         <property name="hibernate.current_session_context_class">thread</property>
         <property name="hibernate.enable_lazy_load_no_trans">true</property>
         <property name="hibernate.hbm2ddl.auto">update</property>		
-        <mapping class="model.Category" />
-        <mapping class="model.Product" />
+        <mapping class="models.Category" />
+        <mapping class="models.Product" />
+        <mapping class="models.User" />
     </session-factory>
 </hibernate-configuration>
