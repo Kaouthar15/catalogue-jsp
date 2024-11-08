@@ -14,13 +14,18 @@
 		<url-pattern>*.jsf</url-pattern>
 	</servlet-mapping>
 	<context-param>
+	    <param-name>primefaces.THEME</param-name>
+	    <param-value>nova-light</param-value>
+	</context-param>
+	
+	<context-param>
 		<param-name>javax.faces.PROJECT_STAGE</param-name>
 		<param-value>Development</param-value>
 	</context-param>
-	<context-param>
-		<param-name>primefaces.THEME</param-name>
-		<param-value>#{authentification.theme}</param-value>
-	</context-param>
+<!-- 	<context-param> -->
+<!-- 		<param-name>primefaces.THEME</param-name> -->
+<!-- 		<param-value>#{authentification.theme}</param-value> -->
+<!-- 	</context-param> -->
 	<context-param>
 		<param-name>primefaces.FONT_AWESOME</param-name>
 		<param-value>true</param-value>
@@ -35,10 +40,6 @@
 			<init-param> 
 				<param-name>thresholdSize</param-name>
 				<param-value>0</param-value> 
-			</init-param>
-			<init-param> 
-				<param-name>uploadDirectory</param-name>
-				<param-value>/home/youssef/Images</param-value> 
 			</init-param>
 		</filter>
 		<filter-mapping> 
