@@ -1,85 +1,67 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html 
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
-<f:view contentType="text/html">
+<ui:composition template="./index.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
 
-	 <ui:composition template="/index.xhtml">
-		<!--changing the title -->
-	 	<ui:define name="title"> Admin Categories </ui:define>
-		<!-- changing the menu -->
-	 	<ui:define name="menu">
-            <p:submenu label="Catalogue" icon="ui-icon-wrench" styleClass="ui-submenu">
-                <p:menuitem value="Categories" url="./adminCategories.jsf" icon="ui-icon-script"/>
-                <p:menuitem value="Produits" url="./adminProducts.jsf" icon="ui-icon-clipboard"/>
-                <p:menuitem value="Statistiques" url="./stats.jsf" icon="ui-icon-calculator"/>
-                <p:menuitem value="Utilisateurs" url="./adminUsers.jsf" icon="ui-icon-person"/>
-            </p:submenu>
-        </ui:define>
-		<!-- changing the content  -->
-		
-		<ui:define name="content">
-			            <h:form>
-                <!-- Category Search -->
-<!--                 <h:panelGrid columns="2"> -->
-<!--                     <h:outputLabel for="keyword" value="Search by Keyword: " /> -->
-<!--                     <h:inputText id="keyword" value="#{adminCategories.keyword}" /> -->
-<!--                     <p:commandButton value="Search" action="#{adminCategories.search}" update="categoryList" /> -->
-<!--                 </h:panelGrid> -->
+    <ui:define name="title">List of Categories</ui:define>
+    <ui:define name="content">
+        <!-- Category Table -->
+        <div class="card">
+            <h:form id="form">
+                <br />
+                <!-- Data Table -->
+                <p:dataTable id="listcategorie" var="cat"
+                    value="#{adminCategories.categories}" rowKey="#{cat.id}"
+                    selectionMode="single" selection="#{adminCategories.selectedCategory}">
+                    
+                    <f:facet name="header">Right Click to View Options</f:facet>
+                    
+                    <p:column headerText="Id">
+                        <h:outputText value="#{cat.id}" />
+                    </p:column>
+                    <p:column headerText="Nom">
+                        <h:outputText value="#{cat.name}" />
+                    </p:column>
+                    <p:column headerText="Description">
+                        <h:outputText value="#{cat.description}" />
+                    </p:column>
+                    <p:column headerText="Actions">
+                        <!-- Edit Button -->
+                        <p:commandButton value="Edit" 
+                                         styleClass="ui-button-raised ui-button-primary"
+                                         actionListener="#{adminCategories.edit()}"
+                                         update=":form"
+                                         icon="pi pi-pencil"
+                                         style="margin-right: 5px;" />
+                        <!-- Delete Button -->
+                        <p:commandButton value="Delete" 
+                                         styleClass="ui-button-raised ui-button-danger"
+                                         actionListener="#{adminCategories.delete()}"
+                                         update=":form"
+                                         icon="pi pi-trash"
+                                         style="margin-left: 5px;"
+                                         oncomplete="PF('confirmDelete').show();" />
+                    </p:column>
+                </p:dataTable>
 
-                <!-- Category List -->
-                <h:panelGrid columns="1" id="categoryList">
-				    <h:dataTable value="#{adminCategories.categories}" var="category">
-				    		<!-- category's id -->
-					    <h:column>
-					            <f:facet name="header"> Id</f:facet>
-					            <h:outputText value="#{category.id}" />
-					        </h:column>
-				        	<!-- category's name -->
-				        <h:column>
-				            <f:facet name="header"> Name</f:facet>
-				            <h:outputText value="#{category.name}" />
-				        </h:column>
-				        	<!-- category's description -->
-				        <h:column>
-				            <f:facet name="header">Description</f:facet>
-				            <h:outputText value="#{category.description}" />
-				        </h:column>
-							<!-- category's action (edit and delete) -->
-				        <h:column>
-				            <f:facet name="header">Actions</f:facet>
-				            <p:commandButton value="Edit" action="#{adminCategories.updateCategoryFormData}" 
-				                             update="categoryForm" process="@this">
-				                <f:param name="categoryId" value="#{category.id}" />
-				            </p:commandButton>
-				            <p:commandButton value="Delete" action="#{adminCategories.delete}" 
-				                             update="categoryList" process="@this">
-				                <f:param name="categoryId" value="#{category.id}" />
-				            </p:commandButton>
-				        </h:column>
-				    </h:dataTable>
-				</h:panelGrid>
-
-
-                <!-- Category Form for Adding or Updating Categories -->
-                <h:panelGrid id="categoryForm" columns="2">
-                    <h:outputLabel for="categoryName" value="Category Name:" />
-                    <h:inputText id="categoryName" value="#{adminCategories.category.name}" />
-
-                    <p:commandButton value="Save" action="#{adminCategories.add}" update="categoryList" />
-                    <p:commandButton value="Update" action="#{adminCategories.update}" update="categoryList" rendered="#{not empty adminCategories.category.id}" />
-
-                    <!-- Hidden input for categoryId -->
-                    <h:inputHidden value="#{adminCategories.category.id}" />
-                </h:panelGrid>
+                <!-- Button Outside the DataTable, at the End -->
+                <p:commandButton value="Add"
+                                 styleClass="ui-button-raised ui-button-flat"
+                                 actionListener="#{adminCategories.enableAddMode}" 
+                                 update=":form" 
+                                 style="margin-top: 10px;" />
             </h:form>
-		</ui:define>	
-        
-	  </ui:composition>
+        </div>
 
-</f:view>
-</html>
+        <!-- Confirm Delete Dialog -->
+        <p:confirmDialog id="confirmDelete" header="Confirm" message="Are you sure you want to delete this category?"
+                         showEffect="fade" hideEffect="fade" modal="true">
+            <p:commandButton value="Yes" actionListener="#{adminCategories.confirmDelete()}" 
+                             update=":form" />
+            <p:commandButton value="No" onclick="PF('confirmDelete').hide()" />
+        </p:confirmDialog>
+
+    </ui:define>
+</ui:composition>
