@@ -1,4 +1,4 @@
-package actions;
+package beans;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -21,8 +21,21 @@ public class AdminCategories {
     private Long categoryId;
     private String keyword;
     private boolean addMode = false;
+    private boolean editMode = false;
 
     // Getter and Setter methods
+    
+    public boolean getEditMode() {
+		return editMode;
+	}
+    public boolean isEditMode() {
+		return editMode;
+	}
+	public void setEditMode(boolean editMode) {
+		this.editMode = editMode;
+	}
+	
+	
     public Category getNewCategory() {
 		return newCategory;
 	}
@@ -112,8 +125,13 @@ public class AdminCategories {
     //editing methods
     public void edit() {
         if (selectedCategory != null) {
-            categoryId = selectedCategory.getId();
+        	categoryService.update(selectedCategory); 
+        	this.editMode = false; 
         }
+    }
+    public void enableEditMode() {
+        this.editMode = true;
+        this.addMode = false;
     }
     public void update() {
         if (category != null && category.getId() != null) { 
@@ -124,6 +142,7 @@ public class AdminCategories {
     // adding methods
     public void enableAddMode() {
         this.addMode = true;
+        this.editMode = false;
         this.setNewCategory(new Category());
     }
 
@@ -132,6 +151,8 @@ public class AdminCategories {
             this.addMode = false;
             list();
     }
+
+	
 
 
 }
