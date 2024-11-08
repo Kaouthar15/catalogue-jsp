@@ -41,7 +41,20 @@
 	        <version>2.3.3</version>
 	        <scope>provided</scope>
 	    </dependency>
-	
+	<!-- PrimeFaces library dependency -->
+		<dependency>
+		    <groupId>org.primefaces</groupId>
+		    <artifactId>primefaces</artifactId>
+		    <version>12.0</version>
+		</dependency>
+		
+		<!-- PrimeFaces themes library dependency -->
+		<dependency>
+		    <groupId>org.primefaces.themes</groupId>
+		    <artifactId>all-themes</artifactId>
+		    <version>1.0.10</version>
+		</dependency>
+
 	    <!-- Annotation API for Java annotations -->
 	    <dependency>
 	        <groupId>javax.annotation</groupId>
