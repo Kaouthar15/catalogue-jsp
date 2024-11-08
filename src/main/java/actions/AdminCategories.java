@@ -27,7 +27,9 @@ public class AdminCategories {
     public Category getCategory() {
         return category;
     }
-
+    public String getKeyword() {
+        return keyword;
+    }
     public void setCategory(Category category) {
         this.category = category;
     }
@@ -43,6 +45,7 @@ public class AdminCategories {
     // Action methods
     public void list() {
         categories = categoryService.list();
+        System.out.println("list categories method");
     }
 
     @PostConstruct

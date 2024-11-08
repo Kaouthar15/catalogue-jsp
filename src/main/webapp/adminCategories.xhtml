@@ -25,32 +25,45 @@
 		<ui:define name="content">
 			            <h:form>
                 <!-- Category Search -->
-                <h:panelGrid columns="2">
-                    <h:outputLabel for="keyword" value="Search by Keyword: " />
-                    <h:inputText id="keyword" value="#{adminCategories.keyword}" />
-                    <p:commandButton value="Search" action="#{adminCategories.search}" update="categoryList" />
-                </h:panelGrid>
+<!--                 <h:panelGrid columns="2"> -->
+<!--                     <h:outputLabel for="keyword" value="Search by Keyword: " /> -->
+<!--                     <h:inputText id="keyword" value="#{adminCategories.keyword}" /> -->
+<!--                     <p:commandButton value="Search" action="#{adminCategories.search}" update="categoryList" /> -->
+<!--                 </h:panelGrid> -->
 
                 <!-- Category List -->
                 <h:panelGrid columns="1" id="categoryList">
-                    <h:dataTable value="#{adminCategories.categories}" var="category">
-                        <h:column>
-                            <f:facet name="header">Category Name</f:facet>
-                            <h:outputText value="#{category.name}" />
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">Actions</f:facet>
-                            <p:commandButton value="Edit" action="#{adminCategories.updateCategoryFormData}" 
-                                             update="categoryForm" process="@this">
-                                <f:param name="categoryId" value="#{category.id}" />
-                            </p:commandButton>
-                            <p:commandButton value="Delete" action="#{adminCategories.delete}" 
-                                             update="categoryList" process="@this">
-                                <f:param name="categoryId" value="#{category.id}" />
-                            </p:commandButton>
-                        </h:column>
-                    </h:dataTable>
-                </h:panelGrid>
+				    <h:dataTable value="#{adminCategories.categories}" var="category">
+				    		<!-- category's id -->
+					    <h:column>
+					            <f:facet name="header"> Id</f:facet>
+					            <h:outputText value="#{category.id}" />
+					        </h:column>
+				        	<!-- category's name -->
+				        <h:column>
+				            <f:facet name="header"> Name</f:facet>
+				            <h:outputText value="#{category.name}" />
+				        </h:column>
+				        	<!-- category's description -->
+				        <h:column>
+				            <f:facet name="header">Description</f:facet>
+				            <h:outputText value="#{category.description}" />
+				        </h:column>
+							<!-- category's action (edit and delete) -->
+				        <h:column>
+				            <f:facet name="header">Actions</f:facet>
+				            <p:commandButton value="Edit" action="#{adminCategories.updateCategoryFormData}" 
+				                             update="categoryForm" process="@this">
+				                <f:param name="categoryId" value="#{category.id}" />
+				            </p:commandButton>
+				            <p:commandButton value="Delete" action="#{adminCategories.delete}" 
+				                             update="categoryList" process="@this">
+				                <f:param name="categoryId" value="#{category.id}" />
+				            </p:commandButton>
+				        </h:column>
+				    </h:dataTable>
+				</h:panelGrid>
+
 
                 <!-- Category Form for Adding or Updating Categories -->
                 <h:panelGrid id="categoryForm" columns="2">
