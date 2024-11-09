@@ -2,11 +2,15 @@ package services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.HashMap;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import models.Category;
 import models.Product;
@@ -52,6 +56,42 @@ public class ProductService implements DAO<Product> {
             logger.log(Level.SEVERE, "Error in listing all products", e);
             return productsList;
         }
+    }
+
+    // Method to count products by category using Hibernate and transactions
+    public Map<Category, Long> countProductsByCategory() {
+        Map<Category, Long> categoryCounts = new HashMap<>();
+        Session session = this.sessionFactory.getCurrentSession();
+
+        // Start a Hibernate transaction
+        Transaction transaction = session.beginTransaction();
+
+        try {
+            // JPQL query to count products by category
+            String hql = "SELECT p.category, COUNT(p) FROM Product p GROUP BY p.category";
+            Query<Object[]> query = session.createQuery(hql);
+
+            // Execute the query and get the result list
+            List<Object[]> resultList = query.list();
+
+            // Process the result list and populate the categoryCounts map
+            for (Object[] result : resultList) {
+                Category category = (Category) result[0];
+                Long count = (Long) result[1];
+                categoryCounts.put(category, (long) count);
+            }
+
+            // Commit the transaction
+            transaction.commit();
+        } catch (Exception e) {
+            // If there is an exception, roll back the transaction
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
+            e.printStackTrace();
+        }
+
+        return categoryCounts;
     }
 
     // Add a product with a category

@@ -1,68 +1,70 @@
 package beans;
 
-import org.primefaces.model.chart.BarChartModel;
-import org.primefaces.model.chart.PieChartModel;
-import org.primefaces.model.chart.ChartSeries;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import java.util.HashMap;
-import java.util.Map;
+
+import org.primefaces.model.chart.BarChartModel;
+import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.PieChartModel;
+import services.ProductService;
+import models.Category;
+import models.Product;
 
 @ManagedBean(name = "adminStatistics")
 @SessionScoped
 public class AdminStatistics {
 
     private PieChartModel salesChart;
-    private BarChartModel barChart;
+    private BarChartModel categoryChart;
+    private ProductService productService = new ProductService(); // Assuming ProductService handles DB operations
 
-    public AdminStatistics() {
-        // Initializing charts
+    @PostConstruct
+    public void init() {
         createSalesChart();
-        createBarChart();
+        createCategoryChart();
     }
 
-    // Getters for the charts
     public PieChartModel getSalesChart() {
         return salesChart;
     }
-
-    public BarChartModel getBarChart() {
-        return barChart;
+    
+    public BarChartModel getCategoryChart() {
+        return categoryChart;
     }
 
-    // Create Pie Chart for Sales Data
     private void createSalesChart() {
         salesChart = new PieChartModel();
-
-        // Example: You can replace these values with actual data from your database
-        salesChart.set("Product A", 100); // Example value
-        salesChart.set("Product B", 200); // Example value
-        salesChart.set("Product C", 150); // Example value
+        
+        List<Product> products = productService.list();
+        for (Product product : products) {
+            salesChart.set(product.getName(), product.getQuantity().doubleValue()); // Assuming quantity represents sales
+        }
 
         // Customize the Pie Chart (optional)
         salesChart.setTitle("Product Sales Distribution");
         salesChart.setLegendPosition("w");
         salesChart.setShowDataLabels(true);
     }
+    
+    private void createCategoryChart() {
+        categoryChart = new BarChartModel();
+        
+        ChartSeries categories = new ChartSeries();
+        categories.setLabel("Categories");
 
-    // Create Bar Chart for Sales Comparison
-    private void createBarChart() {
-        barChart = new BarChartModel();
+        // Example: Group by categories and count products per category
+        Map<Category, Long> categoryCounts = productService.countProductsByCategory();
+        for (Map.Entry<Category, Long> entry : categoryCounts.entrySet()) {
+            categories.set(entry.getKey(), entry.getValue());
+        }
 
-        // Create a series for the bar chart (Example: Sales for different months)
-        ChartSeries sales = new ChartSeries();
-        sales.setLabel("Sales");
-        sales.set("January", 120);  // Example value
-        sales.set("February", 150); // Example value
-        sales.set("March", 200);    // Example value
-        sales.set("April", 180);    // Example value
-
-        // Add the series to the Bar Chart
-        barChart.addSeries(sales);
-
-        // Customize the Bar Chart (optional)
-        barChart.setTitle("Sales Over Time");
-        barChart.setLegendPosition("ne");
-        barChart.setShowPointLabels(true);
+        categoryChart.addSeries(categories);
+        categoryChart.setTitle("Products per Category");
+//        categoryChart.setLegendPosition("ne");
+        categoryChart.setAnimate(true);
     }
 }
