@@ -98,11 +98,12 @@ public class ProductService implements DAO<Product> {
     public void add(Product product, Long categoryId) {
         Session session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();
-        
+        System.out.println("begin of the session add");
         Category category = categoryService.get(categoryId);
         if (category != null) {
             product.setCategory(category);
         }
+        System.out.println(product + "   "+category);
 
         session.persist(product);
         session.getTransaction().commit();

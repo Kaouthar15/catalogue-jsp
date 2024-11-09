@@ -4,9 +4,15 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import org.primefaces.model.file.UploadedFile;
+
 import models.User;
 import services.UserService;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 @ManagedBean(name = "adminUsers") 
@@ -22,6 +28,10 @@ public class AdminUsers {
     private String keyword;
     private boolean addMode = false;
     private boolean editMode = false;
+
+    // Properties for file upload
+    private UploadedFile newUserPhoto;  // Photo for the new user
+    private UploadedFile selectedUserPhoto; // Photo for the selected user during editing
 
     // Getter and Setter methods
 
@@ -89,6 +99,23 @@ public class AdminUsers {
         this.keyword = keyword;
     }
 
+    // Getter and Setter for file upload
+    public UploadedFile getNewUserPhoto() {
+        return newUserPhoto;
+    }
+
+    public void setNewUserPhoto(UploadedFile newUserPhoto) {
+        this.newUserPhoto = newUserPhoto;
+    }
+
+    public UploadedFile getSelectedUserPhoto() {
+        return selectedUserPhoto;
+    }
+
+    public void setSelectedUserPhoto(UploadedFile selectedUserPhoto) {
+        this.selectedUserPhoto = selectedUserPhoto;
+    }
+
     // Action methods
     public void list() {
         users = userService.list();
@@ -96,7 +123,7 @@ public class AdminUsers {
     }
     
     public void onRowSelect() {
-        System.out.println(selectedUser);
+//        System.out.println(selectedUser);
     }
 
     @PostConstruct
@@ -145,10 +172,51 @@ public class AdminUsers {
         this.editMode = false;
         this.setNewUser(new User());
     }
-
     public void add() {
-        userService.add(newUser); 
+    	System.out.println(newUserPhoto);
+        if (newUserPhoto != null) {
+            System.out.println("Uploaded file: " + newUserPhoto.getFileName());
+            String photoPath = "/resources/img/" + newUserPhoto.getFileName();
+            savePhoto(newUserPhoto, photoPath);
+            newUser.setPhoto(photoPath);
+        } else {
+            System.out.println("No file selected.");
+        }
+        userService.add(newUser);
         this.addMode = false;
         list();
+    }
+
+
+    private void savePhoto(UploadedFile file, String photoPath) {
+        try {
+            System.out.println("Saving photo...");
+            InputStream input = file.getInputStream();
+            String filePath = "C:\\Users\\Kaoutar\\eclipse-workspace\\catalogue-jsf\\src\\main\\webapp\\resources\\img\\" + file.getFileName();
+            File outputFile = new File(filePath);
+            
+            try (FileOutputStream output = new FileOutputStream(outputFile)) {
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = input.read(buffer)) > 0) {
+                    output.write(buffer, 0, length);
+                }
+            }
+            System.out.println("Photo saved at: " + filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    // Logic for updating the photo during editing
+    public void updatePhoto() {
+        if (selectedUserPhoto != null) {
+            String photoPath = "/resources/img/" + selectedUserPhoto.getFileName();
+            savePhoto(selectedUserPhoto, photoPath);
+            selectedUser.setPhoto(photoPath); // Update the photo path
+        }
+        userService.update(selectedUser); 
     }
 }

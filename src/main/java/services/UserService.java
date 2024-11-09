@@ -28,6 +28,7 @@ public class UserService implements DAO<User> {
     // Add a user
     @Override
     public void add(User user) {
+    	System.out.println("add service");
         Session session = this.sessionFactory.getCurrentSession();
         session.beginTransaction();
         session.persist(user);

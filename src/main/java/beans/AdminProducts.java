@@ -20,7 +20,7 @@ public class AdminProducts {
     
     private List<Product> products;
     private List<Category> categories;
-    private Product product = new Product(); // For adding a new product
+    private Product newProduct = new Product(); // For adding a new product
     private Product selectedProduct; // For selected product in edit or delete actions
     private Long categoryId; // Selected category ID
     private String keyword;
@@ -52,12 +52,12 @@ public class AdminProducts {
         this.keyword = keyword;
     }
 
-    public Product getProduct() {
-        return product;
+    public Product getNewProduct() {
+        return newProduct;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setNewProduct(Product product) {
+        this.newProduct = product;
     }
 
     public Product getSelectedProduct() {
@@ -113,7 +113,7 @@ public class AdminProducts {
     public void enableAddMode() {
         this.addMode = true;
         this.editMode = false;
-        this.product = new Product(); // Create a new empty product
+        this.newProduct = new Product(); // Create a new empty product
     }
 
     // Enable edit mode and load selected product
@@ -124,12 +124,11 @@ public class AdminProducts {
 
     // Add a new product with the selected category
     public void add() {
-        if (product != null && categoryId != null) {
-            product.setCategory(categoryService.getById(categoryId));
-            productService.add(product);
-            this.addMode = false;
-            list();
-        }
+        
+        productService.add(newProduct,categoryId);
+        this.addMode = false;
+        list();
+        
     }
 
     // Edit an existing product with the selected category
