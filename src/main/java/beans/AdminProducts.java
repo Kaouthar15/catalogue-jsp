@@ -133,9 +133,8 @@ public class AdminProducts {
 
     // Edit an existing product with the selected category
     public void update() {
-        if (selectedProduct != null && selectedProduct.getId() != null && categoryId != null) {
-            selectedProduct.setCategory(categoryService.getById(categoryId));
-            productService.update(selectedProduct);
+        if (selectedProduct != null && selectedProduct.getId() != null) {
+            productService.update(selectedProduct,selectedProduct.getCategory().getId());
             this.editMode = false;
             list();
         }

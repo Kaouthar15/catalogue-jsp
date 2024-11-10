@@ -88,7 +88,7 @@ public class Product implements Serializable {
 	}
 
 	public String toString() {
-		return "name : "+name +" price : "+price+" quantity : "+quantity + " sdr : " + sdr;
+		return "name : "+name +" price : "+price+" quantity : "+quantity + " sdr : " + sdr +" categoryId " + category.getId();
 	}
 
 	public String getPhoto() {
