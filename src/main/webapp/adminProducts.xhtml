@@ -101,6 +101,35 @@
 			        <p:commandButton value="Save" action="#{adminProducts.add}" update=":form" />
 			        <p:commandButton value="Cancel" action="#{adminProducts.setAddMode(false)}" update=":form" />
 			    </h:panelGroup>
+			    
+			    <h:panelGroup rendered="#{adminProducts.editMode}">
+                        <h2>Edit Product</h2>
+
+                        <!-- Fields for Editing Product -->
+                        <h:outputLabel for="editName" value="Name:" />
+                        <h:inputText id="editName" value="#{adminProducts.selectedProduct.name}" required="true" />
+
+                        <h:outputLabel for="editPrice" value="Price:" />
+                        <h:inputText id="editPrice" value="#{adminProducts.selectedProduct.price}" required="true" />
+
+                        <h:outputLabel for="editQuantity" value="Quantity:" />
+                        <h:inputText id="editQuantity" value="#{adminProducts.selectedProduct.quantity}" required="true" />
+
+                        <h:outputLabel for="editSdr" value="Sdr:" />
+                        <h:inputText id="editSdr" value="#{adminProducts.selectedProduct.sdr}" required="true" />
+
+                        <h:outputLabel for="editCategory" value="Category:" />
+                        <h:selectOneMenu id="editCategory" value="#{adminProducts.selectedProduct.category.id}">
+                            <f:selectItem itemLabel="Select Category" itemValue="" />
+                            <f:selectItems value="#{adminProducts.categories}" var="cat" itemLabel="#{cat.name}" itemValue="#{cat.id}" />
+                        </h:selectOneMenu>
+
+                        <h:outputLabel for="editPhoto" value="Product Photo:" />
+                        <p:fileUpload value="#{adminProducts.selectedProduct.photo}" mode="simple" />
+
+                        <p:commandButton value="Save Changes" action="#{adminProducts.update}" update=":form" />
+                        <p:commandButton value="Cancel" action="#{adminProducts.setEditMode(false)}" update=":form" />
+                    </h:panelGroup>
 			    </h:panelGrid>
 
             </h:form>
