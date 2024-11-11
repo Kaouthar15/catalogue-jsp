@@ -5,14 +5,18 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 
 import models.User;
 import services.UserService;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,26 +37,41 @@ public class AdminUsers {
     private boolean editMode = false;
     
     private UploadedFile file;
-    private String path;
 
 
     // Getter and Setter methods
-    
+
     public UploadedFile getFile() {
 		return file;
 	}
 
 	public void setFile(UploadedFile file) {
-		this.file = file;
+		System.out.println("££££££££££££ Calling setFile £££££££££££££££££");
+		System.out.println(file.getFileName() + " " + file.getSize()); 
+		this.file = file; 
+		ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+		String path = servletContext.getRealPath("") + "resources" + File.separator + "img" + File.separator;
+		System.out.println(path);
+		try {
+			@SuppressWarnings("resource")
+			OutputStream outputStream = new FileOutputStream(path+file.getFileName()); 
+			InputStream inputStream = file.getInputStream();
+			 byte[] buffer = new byte[1024];
+		        int bytesRead;
+		        
+		        while ((bytesRead = inputStream.read(buffer)) != -1) {
+		        	outputStream.write(buffer, 0, bytesRead);
+		        }
+		        
+		        System.out.println("File successfully uploaded to " + path + file.getFileName());
+		} catch (Exception e) {
+			System.err.println("Error during file upload: " + e.getMessage());
+		}
+		
 	}
-
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
-	}
+	
+	
+	
 
     public boolean getEditMode() {
         return editMode;
@@ -178,47 +197,16 @@ public class AdminUsers {
         this.setNewUser(new User());
     }
     public void add() {
-    	System.out.println(file);
-    	System.out.println("method add ");
-    	if (file != null) {
-            this.newUser.setPhoto(uploadImage());
-        }
+        newUser.setPhoto("/img/"+file.getFileName());  
         userService.add(newUser);
         this.addMode = false;
         list();
     }
+
     
-    public String uploadImage() {
-        try {
-            if (file == null) {
-                System.out.println("No file to upload.");
-                return null;
-            }
-            System.out.println("Uploading file: " + file.getFileName());
-            String uploadDir = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/img");
-            File dir = new File(uploadDir);
-            
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-
-            String fileName = System.currentTimeMillis() + "_" + file.getFileName();
-            Path filePath = Paths.get(uploadDir, fileName);
-
-            try (InputStream input = file.getInputStream()) {
-                Files.copy(input, filePath);
-            }
-
-            return fileName;
-        } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "File upload failed!", null));
-            e.printStackTrace();
-        }
-
-        return null;
+    public void upload(FileUploadEvent event) {
+    	System.out.println(event.getFile().getFileName());
     }
-
 
     // Logic for updating the photo during editing
     public void updatePhoto() {
@@ -226,6 +214,10 @@ public class AdminUsers {
         userService.update(selectedUser); 
         this.setEditMode(false);
     }
+
+	
+    
+    
     
     
     
