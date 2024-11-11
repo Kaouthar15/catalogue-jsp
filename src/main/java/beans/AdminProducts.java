@@ -27,6 +27,8 @@ public class AdminProducts {
     private String keyword;
     private boolean addMode = false;
     private boolean editMode = false;
+    
+
 
     // Getter and Setter methods
     public List<Product> getProducts() {
@@ -117,7 +119,7 @@ public class AdminProducts {
     public void enableAddMode() {
         this.addMode = true;
         this.editMode = false;
-        this.newProduct = new Product(); // Create a new empty product
+        this.newProduct = new Product(); 
     }
 
     // Enable edit mode and load selected product
@@ -129,7 +131,7 @@ public class AdminProducts {
     // Add a new product with the selected category
     public void add() {
         
-        productService.add(newProduct,categoryId);
+        productService.add(newProduct,categoryId); 
         setAddMode(false); 
         list();
         
@@ -165,4 +167,5 @@ public class AdminProducts {
         this.addMode = false;
         
     }
+    
 }

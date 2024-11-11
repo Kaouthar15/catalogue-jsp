@@ -80,9 +80,8 @@
                         <p:inputText id="password" value="#{adminUsers.newUser.password}" />
                         
                         <h:outputLabel for="photo" value="Photo:" />
-                        <p:fileUpload id="photo" value="#{adminUsers.newUserPhoto}" mode="advanced" 
-				              label="Choose a Photo" accept="image/*" 
-				              uploadLabel="Upload" styleClass="file-upload" fileLimit="1" />
+						<p:fileUpload id="photo" value="#{adminUsers.file}" mode="simple" accept=".jpg,.jpeg,.png" />
+				              
                     </h:panelGrid>
 
                     <p:commandButton value="Save" 

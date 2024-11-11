@@ -1,8 +1,10 @@
 package beans;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.model.file.UploadedFile;
 
@@ -10,9 +12,10 @@ import models.User;
 import services.UserService;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @ManagedBean(name = "adminUsers") 
@@ -28,12 +31,28 @@ public class AdminUsers {
     private String keyword;
     private boolean addMode = false;
     private boolean editMode = false;
+    
+    private UploadedFile file;
+    private String path;
 
-    // Properties for file upload
-    private UploadedFile newUserPhoto;  // Photo for the new user
-    private UploadedFile selectedUserPhoto; // Photo for the selected user during editing
 
     // Getter and Setter methods
+    
+    public UploadedFile getFile() {
+		return file;
+	}
+
+	public void setFile(UploadedFile file) {
+		this.file = file;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
 
     public boolean getEditMode() {
         return editMode;
@@ -100,21 +119,7 @@ public class AdminUsers {
     }
 
     // Getter and Setter for file upload
-    public UploadedFile getNewUserPhoto() {
-        return newUserPhoto;
-    }
 
-    public void setNewUserPhoto(UploadedFile newUserPhoto) {
-        this.newUserPhoto = newUserPhoto;
-    }
-
-    public UploadedFile getSelectedUserPhoto() {
-        return selectedUserPhoto;
-    }
-
-    public void setSelectedUserPhoto(UploadedFile selectedUserPhoto) {
-        this.selectedUserPhoto = selectedUserPhoto;
-    }
 
     // Action methods
     public void list() {
@@ -173,50 +178,59 @@ public class AdminUsers {
         this.setNewUser(new User());
     }
     public void add() {
-    	System.out.println(newUserPhoto);
-        if (newUserPhoto != null) {
-            System.out.println("Uploaded file: " + newUserPhoto.getFileName());
-            String photoPath = "/resources/img/" + newUserPhoto.getFileName();
-            savePhoto(newUserPhoto, photoPath);
-            newUser.setPhoto(photoPath);
-        } else {
-            System.out.println("No file selected.");
+    	System.out.println(file);
+    	System.out.println("method add ");
+    	if (file != null) {
+            this.newUser.setPhoto(uploadImage());
         }
         userService.add(newUser);
         this.addMode = false;
         list();
     }
-
-
-    private void savePhoto(UploadedFile file, String photoPath) {
+    
+    public String uploadImage() {
         try {
-            System.out.println("Saving photo...");
-            InputStream input = file.getInputStream();
-            String filePath = "C:\\Users\\Kaoutar\\eclipse-workspace\\catalogue-jsf\\src\\main\\webapp\\resources\\img\\" + file.getFileName();
-            File outputFile = new File(filePath);
-            
-            try (FileOutputStream output = new FileOutputStream(outputFile)) {
-                byte[] buffer = new byte[1024];
-                int length;
-                while ((length = input.read(buffer)) > 0) {
-                    output.write(buffer, 0, length);
-                }
+            if (file == null) {
+                System.out.println("No file to upload.");
+                return null;
             }
-            System.out.println("Photo saved at: " + filePath);
-        } catch (IOException e) {
+            System.out.println("Uploading file: " + file.getFileName());
+            String uploadDir = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/resources/img");
+            File dir = new File(uploadDir);
+            
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            String fileName = System.currentTimeMillis() + "_" + file.getFileName();
+            Path filePath = Paths.get(uploadDir, fileName);
+
+            try (InputStream input = file.getInputStream()) {
+                Files.copy(input, filePath);
+            }
+
+            return fileName;
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "File upload failed!", null));
             e.printStackTrace();
         }
-    }
 
+        return null;
+    }
 
 
     // Logic for updating the photo during editing
     public void updatePhoto() {
-        if (selectedUserPhoto != null) {
-            String photoPath = "/resources/img/" + selectedUserPhoto.getFileName();
-            savePhoto(selectedUserPhoto, photoPath);
-            selectedUser.setPhoto(photoPath); // Update the photo path
-        }
+        this.setAddMode(true);
         userService.update(selectedUser); 
+        this.setEditMode(false);
     }
+    
+    
+    
+    
+    
+	
+
 }
