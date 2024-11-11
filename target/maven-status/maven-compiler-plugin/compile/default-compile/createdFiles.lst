@@ -1,11 +1,8 @@
+services\UserService.class
+models\User.class
+models\Category.class
+services\CategoryService.class
 services\ProductService.class
 services\DAO.class
 models\Product.class
-services\UserService.class
 utils\HibernateUtil.class
-actions\AdminUsers.class
-models\User.class
-models\Category.class
-actions\AdminCategories.class
-services\CategoryService.class
-actions\AdminProducts.class

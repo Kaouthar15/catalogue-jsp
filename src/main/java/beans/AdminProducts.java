@@ -10,6 +10,7 @@ import services.CategoryService;
 import services.ProductService;
 import models.Category;
 import models.Product;
+import net.bytebuddy.asm.Advice.This;
 
 @ManagedBean(name = "adminProducts") 
 @SessionScoped
@@ -20,9 +21,9 @@ public class AdminProducts {
     
     private List<Product> products;
     private List<Category> categories;
-    private Product newProduct = new Product(); // For adding a new product
-    private Product selectedProduct; // For selected product in edit or delete actions
-    private Long categoryId; // Selected category ID
+    private Product newProduct = new Product(); 
+    private Product selectedProduct; 
+    private Long categoryId;
     private String keyword;
     private boolean addMode = false;
     private boolean editMode = false;
@@ -83,6 +84,9 @@ public class AdminProducts {
     public void setAddMode(boolean addMode) {
         this.addMode = addMode;
     }
+    public boolean getAddMode(boolean addMode) {
+    	return addMode;
+    }
 
     public boolean isEditMode() {
         return editMode;
@@ -126,7 +130,7 @@ public class AdminProducts {
     public void add() {
         
         productService.add(newProduct,categoryId);
-        this.addMode = false;
+        setAddMode(false); 
         list();
         
     }
@@ -135,7 +139,7 @@ public class AdminProducts {
     public void update() {
         if (selectedProduct != null && selectedProduct.getId() != null) {
             productService.update(selectedProduct,selectedProduct.getCategory().getId());
-            this.editMode = false;
+           setEditMode(false);
             list();
         }
     }
@@ -154,5 +158,11 @@ public class AdminProducts {
         if (keyword != null && !keyword.isEmpty()) {
             products = productService.selectByKeyword(keyword);
         }
+    }
+    // cancel mode 
+    public void cancelAddMode() {
+    	System.out.println(this.addMode);
+        this.addMode = false;
+        
     }
 }

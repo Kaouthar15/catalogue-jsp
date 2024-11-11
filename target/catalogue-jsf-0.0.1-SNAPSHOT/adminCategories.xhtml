@@ -1,72 +1,115 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html 
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
-<f:view contentType="text/html">
+<ui:composition template="./index.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    <ui:define name="title">List of Categories</ui:define>
+    <ui:define name="content">
+        <!-- Category Table -->
+        <div class="card">
+            <h:form id="form">
+                <br />
+                <!-- Data Table with Radio Button Selection -->
+                <p:dataTable id="listcategorie" var="cat"
+                    value="#{adminCategories.categories}" rowKey="#{cat.id}"
+                    selectionMode="single" selection="#{adminCategories.selectedCategory}"
+                    paginator="true" rows="6" 
+                    paginatorTemplate="{CurrentPageReport}   {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
 
-	 <ui:composition template="/index.xhtml">
-		<!--changing the title -->
-	 	<ui:define name="title"> Admin Categories </ui:define>
-		<!-- changing the menu -->
-	 	<ui:define name="menu">
-            <p:submenu label="Catalogue" icon="ui-icon-wrench" styleClass="ui-submenu">
-                <p:menuitem value="Categories" url="./adminCategories.jsf" icon="ui-icon-script"/>
-                <p:menuitem value="Produits" url="./adminProducts.jsf" icon="ui-icon-clipboard"/>
-                <p:menuitem value="Statistiques" url="./stats.jsf" icon="ui-icon-calculator"/>
-                <p:menuitem value="Utilisateurs" url="./adminUsers.jsf" icon="ui-icon-person"/>
-            </p:submenu>
-        </ui:define>
-		<!-- changing the content  -->
-		
-		<ui:define name="content">
-			            <h:form>
-                <!-- Category Search -->
-                <h:panelGrid columns="2">
-                    <h:outputLabel for="keyword" value="Search by Keyword: " />
-                    <h:inputText id="keyword" value="#{adminCategories.keyword}" />
-                    <p:commandButton value="Search" action="#{adminCategories.search}" update="categoryList" />
-                </h:panelGrid>
+                    <f:facet name="header">Select a Category</f:facet>
 
-                <!-- Category List -->
-                <h:panelGrid columns="1" id="categoryList">
-                    <h:dataTable value="#{adminCategories.categories}" var="category">
-                        <h:column>
-                            <f:facet name="header">Category Name</f:facet>
-                            <h:outputText value="#{category.name}" />
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">Actions</f:facet>
-                            <p:commandButton value="Edit" action="#{adminCategories.updateCategoryFormData}" 
-                                             update="categoryForm" process="@this">
-                                <f:param name="categoryId" value="#{category.id}" />
-                            </p:commandButton>
-                            <p:commandButton value="Delete" action="#{adminCategories.delete}" 
-                                             update="categoryList" process="@this">
-                                <f:param name="categoryId" value="#{category.id}" />
-                            </p:commandButton>
-                        </h:column>
-                    </h:dataTable>
-                </h:panelGrid>
+                    <!-- Radio Button Column for Selecting Row -->
+                    <p:column selectionMode="single" style="width: 30px;"/>
+					<p:ajax event="rowSelect" listener="#{adminCategories.onRowSelect}" update=":form" />
+					
+                    <!-- Columns for Category Data -->
+                    <p:column headerText="Id">
+                        <h:outputText value="#{cat.id}" />
+                    </p:column>
+                    <p:column headerText="Name">
+                        <h:outputText value="#{cat.name}" />
+                    </p:column>
+                    <p:column headerText="Description">
+                        <h:outputText value="#{cat.description}" />
+                    </p:column>
+                </p:dataTable>
 
-                <!-- Category Form for Adding or Updating Categories -->
-                <h:panelGrid id="categoryForm" columns="2">
-                    <h:outputLabel for="categoryName" value="Category Name:" />
-                    <h:inputText id="categoryName" value="#{adminCategories.category.name}" />
+                <!-- Action Buttons -->
+                <h:panelGroup styleClass="centered-buttons">
+                <p:commandButton value="Add" 
+                                 styleClass="ui-button-raised ui-button-flat"
+                                 actionListener="#{adminCategories.enableAddMode}" 
+                                 update=":form" 
+                                 style="margin-top: 10px;" />
 
-                    <p:commandButton value="Save" action="#{adminCategories.add}" update="categoryList" />
-                    <p:commandButton value="Update" action="#{adminCategories.update}" update="categoryList" rendered="#{not empty adminCategories.category.id}" />
+                <p:commandButton value="Edit" 
+                                 styleClass="ui-button-raised ui-button-primary"
+                                 action="#{adminCategories.enableEditMode}"
+                                 update=":form"
+                                 icon="pi pi-pencil"
+                                 disabled="#{adminCategories.selectedCategory == null}"
+                                 style="margin-left: 10px;" />
 
-                    <!-- Hidden input for categoryId -->
-                    <h:inputHidden value="#{adminCategories.category.id}" />
-                </h:panelGrid>
+                <p:commandButton value="Delete" 
+                                 styleClass="ui-button-raised ui-button-danger"
+                                 action="#{adminCategories.delete}"
+                                 update=":form"
+                                 icon="pi pi-trash"
+                                 disabled="#{adminCategories.selectedCategory == null}"
+                                 style="margin-left: 10px;" />
+                </h:panelGroup>
+                                 <br/>
+                <h:panelGroup rendered="#{adminCategories.addMode}">
+				        <h:outputText value="Add a New Category" styleClass="ui-widget-header" />
+				
+				        <!-- Category Form -->
+				        <h:panelGrid columns="2">
+				            <h:outputLabel for="name" value="Name:" />
+				            <p:inputText id="name" value="#{adminCategories.newCategory.name}" />
+				
+				            <h:outputLabel for="description" value="Description:" />
+				            <p:inputText id="description" value="#{adminCategories.newCategory.description}" />
+				        </h:panelGrid>
+				
+				        <p:commandButton value="Save" 
+				                         action="#{adminCategories.add}" 
+				                         update=":form" 
+				                         styleClass="ui-button-raised ui-button-success" 
+				                         style="margin-top: 10px;" />
+				        <p:commandButton value="Cancel" 
+				                         action="#{adminCategories.setAddMode(false)}" 
+				                         update=":form" 
+				                         styleClass="ui-button-raised ui-button-danger" 
+				                         style="margin-top: 10px;" />
+				</h:panelGroup>
+				
+				<h:panelGroup rendered="#{adminCategories.editMode}">
+				        <h:outputText value="Edit The Category" styleClass="ui-widget-header" />
+				
+				        <!-- Category Form -->
+				        <h:panelGrid columns="2">
+				            <h:outputLabel for="nameEdited" value="Name:" />
+				            <p:inputText id="nameEdited" value="#{adminCategories.selectedCategory.name}" />
+				
+				            <h:outputLabel for="descriptionEdited" value="Description:" />
+				            <p:inputText id="descriptionEdited" value="#{adminCategories.selectedCategory.description}" />
+				        </h:panelGrid>
+				
+				        <p:commandButton value="Save" 
+				                         action="#{adminCategories.update}" 
+				                         update=":form" 
+				                         styleClass="ui-button-raised ui-button-success" 
+				                         style="margin-top: 10px;" />
+				        <p:commandButton value="Cancel" 
+				                         action="#{adminCategories.setEditMode(false)}" 
+				                         update=":form" 
+				                         styleClass="ui-button-raised ui-button-danger" 
+				                         style="margin-top: 10px;" />
+				</h:panelGroup>
             </h:form>
-		</ui:define>	
-        
-	  </ui:composition>
+        </div>
 
-</f:view>
-</html>
+
+    </ui:define>
+</ui:composition>

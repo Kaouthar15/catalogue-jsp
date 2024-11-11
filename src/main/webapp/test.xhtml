@@ -7,9 +7,12 @@
     <ui:define name="title">Test</ui:define>
     <ui:define name="content">
        <h:form enctype="multipart/form-data">
-            <p:fileUpload id="photo" value="#{adminUsers.newUserPhoto}" mode="advanced" 
-              label="Choose a Photo" accept="image/jpeg,image/png,image/gif" />
-            <p:commandButton value="Upload" actionListener="#{uploadTestBean.handleUpload}" update="@form" />
+          
+              <p:fileUpload id="photo" value="#{uploadTestBean.uploadedFile}" label="Choose a Photo" 
+              accept="image/jpeg,image/png,image/gif" />
+              
+			<p:commandButton value="Upload" actionListener="#{uploadTestBean.handleUpload}" update="@form" />
+
             <h:messages />
         </h:form>
     </ui:define>

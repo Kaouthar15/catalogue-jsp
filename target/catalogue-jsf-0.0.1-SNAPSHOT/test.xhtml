@@ -1,0 +1,16 @@
+<ui:composition template="./index.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    <ui:define name="title">Test</ui:define>
+    <ui:define name="content">
+       <h:form enctype="multipart/form-data">
+            <p:fileUpload id="photo" value="#{adminUsers.newUserPhoto}" mode="advanced" 
+              label="Choose a Photo" accept="image/jpeg,image/png,image/gif" />
+            <p:commandButton value="Upload" actionListener="#{uploadTestBean.handleUpload}" update="@form" />
+            <h:messages />
+        </h:form>
+    </ui:define>
+</ui:composition>

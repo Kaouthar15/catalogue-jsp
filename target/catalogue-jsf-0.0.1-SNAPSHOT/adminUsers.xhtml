@@ -1,0 +1,130 @@
+<ui:composition template="./index.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    <ui:define name="title">List of Users</ui:define>
+    <ui:define name="content">
+        <!-- User Table -->
+        <div class="card">
+            <h:form id="form"  enctype="multipart/form-data">
+                <br />
+                <!-- Data Table with Radio Button Selection -->
+                <p:dataTable id="listusers" var="user"
+                    value="#{adminUsers.users}" rowKey="#{user.id}"
+                    selectionMode="single" selection="#{adminUsers.selectedUser}"
+                    paginator="true" rows="6" 
+                    paginatorTemplate="{CurrentPageReport}   {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+
+                    <f:facet name="header">Select a User</f:facet>
+
+                    <!-- Radio Button Column for Selecting Row -->
+                    <p:column selectionMode="single" style="width: 30px;"/>
+                    <p:ajax event="rowSelect" listener="#{adminUsers.onRowSelect}" update=":form" />
+                    
+                    <!-- Columns for User Data -->
+                    <p:column headerText="Id">
+                        <h:outputText value="#{user.id}" />
+                    </p:column>
+                    <p:column headerText="Name">
+                        <h:outputText value="#{user.name}" />
+                    </p:column>
+                    <p:column headerText="Email">
+                        <h:outputText value="#{user.email}" />
+                    </p:column>
+                    <p:column headerText="Photo">
+				        <!-- Display the photo -->
+				        <p:graphicImage value="/resources#{user.photo}" alt="User Photo" style="width: 50px; height: 50px;" />
+				    </p:column>
+                </p:dataTable>
+
+                <!-- Action Buttons -->
+                <h:panelGroup styleClass="centered-buttons">
+                <p:commandButton value="Add" 
+                                 styleClass="ui-button-raised ui-button-flat"
+                                 actionListener="#{adminUsers.enableAddMode}" 
+                                 update=":form" 
+                                 style="margin-top: 10px;" />
+
+                <p:commandButton value="Edit" 
+                                 styleClass="ui-button-raised ui-button-primary"
+                                 action="#{adminUsers.enableEditMode}"
+                                 update=":form"
+                                 icon="pi pi-pencil"
+                                 disabled="#{adminUsers.selectedUser == null}"
+                                 style="margin-left: 10px;" />
+
+                <p:commandButton value="Delete" 
+                                 styleClass="ui-button-raised ui-button-danger"
+                                 action="#{adminUsers.delete}"
+                                 update=":form"
+                                 icon="pi pi-trash"
+                                 disabled="#{adminUsers.selectedUser == null}"
+                                 style="margin-left: 10px;" />
+                </h:panelGroup>
+                <br/>
+                <!-- Add User Form -->
+                <h:panelGroup rendered="#{adminUsers.addMode}">
+                    <h:outputText value="Add a New User" styleClass="ui-widget-header" />
+
+                    <!-- User Form -->
+                    <h:panelGrid columns="2">
+                        <h:outputLabel for="name" value="Name:" />
+                        <p:inputText id="name" value="#{adminUsers.newUser.name}" />
+
+                        <h:outputLabel for="email" value="Email:" />
+                        <p:inputText id="email" value="#{adminUsers.newUser.email}" />
+
+                        <h:outputLabel for="password" value="Password:" />
+                        <p:inputText id="password" value="#{adminUsers.newUser.password}" />
+                        
+                        <h:outputLabel for="photo" value="Photo:" />
+                        <p:fileUpload id="photo" value="#{adminUsers.newUserPhoto}" mode="advanced" 
+				              label="Choose a Photo" accept="image/*" 
+				              uploadLabel="Upload" styleClass="file-upload" fileLimit="1" />
+                    </h:panelGrid>
+
+                    <p:commandButton value="Save" 
+                                     action="#{adminUsers.add}" 
+                                     update=":form" 
+                                     styleClass="ui-button-raised ui-button-success" 
+                                     style="margin-top: 10px;" />
+                    <p:commandButton value="Cancel" 
+                                     action="#{adminUsers.setAddMode(false)}" 
+                                     update=":form" 
+                                     styleClass="ui-button-raised ui-button-danger" 
+                                     style="margin-top: 10px;" />
+                </h:panelGroup>
+
+                <!-- Edit User Form -->
+                <h:panelGroup rendered="#{adminUsers.editMode}">
+                    <h:outputText value="Edit The User" styleClass="ui-widget-header" />
+
+                    <!-- User Form -->
+                    <h:panelGrid columns="2">
+                        <h:outputLabel for="nameEdited" value="Name:" />
+                        <p:inputText id="nameEdited" value="#{adminUsers.selectedUser.name}" />
+
+                        <h:outputLabel for="emailEdited" value="Email:" />
+                        <p:inputText id="emailEdited" value="#{adminUsers.selectedUser.email}" />
+
+                        <h:outputLabel for="passwordEdited" value="Password:" />
+                        <p:inputText id="passwordEdited" value="#{adminUsers.selectedUser.password}" />
+                    </h:panelGrid>
+
+                    <p:commandButton value="Save" 
+                                     action="#{adminUsers.update}" 
+                                     update=":form" 
+                                     styleClass="ui-button-raised ui-button-success" 
+                                     style="margin-top: 10px;" />
+                    <p:commandButton value="Cancel" 
+                                     action="#{adminUsers.setEditMode(false)}" 
+                                     update=":form" 
+                                     styleClass="ui-button-raised ui-button-danger" 
+                                     style="margin-top: 10px;" />
+                </h:panelGroup>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

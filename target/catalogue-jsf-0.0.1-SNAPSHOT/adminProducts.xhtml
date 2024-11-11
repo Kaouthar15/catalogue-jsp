@@ -1,0 +1,139 @@
+<ui:composition template="./index.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="title">List of Products</ui:define>
+    <ui:define name="content">
+        <!-- Product Table -->
+        <div class="card">
+            <h:form id="form">
+                <br />
+                <!-- Data Table with Product Details -->
+                <p:dataTable id="listProduct" var="prod" value="#{adminProducts.products}"
+                	selectionMode="single" selection="#{adminProducts.selectedProduct}"
+                 	rowKey="#{prod.id}" paginator="true" rows="6"
+                    paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}">
+                    <f:facet name="header">List of Products</f:facet>
+					
+					<!-- Radio Button Column for Selecting Row -->
+                    <p:column selectionMode="single" style="width: 30px;"/>
+					<p:ajax event="rowSelect" listener="#{adminProducts.onRowSelect}" update=":form" />
+					
+                    <!-- Columns for Product Data -->
+                    <p:column headerText="Id">
+                        <h:outputText value="#{prod.id}" />
+                    </p:column>
+                    <p:column headerText="Category">
+                        <h:outputText value="#{prod.category.name}" />
+                    </p:column>
+                    <p:column headerText="Name">
+                        <h:outputText value="#{prod.name}" />
+                    </p:column>
+                    <p:column headerText="Price">
+                        <h:outputText value="#{prod.price}" />
+                    </p:column>
+                    <p:column headerText="Quantity">
+                        <h:outputText value="#{prod.quantity}" />
+                    </p:column>
+                    <p:column headerText="Sdr">
+                        <h:outputText value="#{prod.sdr}" />
+                    </p:column>
+                    <p:column headerText="Photo">
+                         <p:graphicImage value="/resources#{prod.photo}" alt="Product Photo" style="width: 50px; height: 50px;" />
+                    </p:column>
+                    
+                    
+                </p:dataTable>
+				                <!-- Action Buttons -->
+                <h:panelGroup styleClass="centered-buttons">
+                <p:commandButton value="Add" 
+                                 styleClass="ui-button-raised ui-button-flat"
+                                 actionListener="#{adminProducts.enableAddMode}" 
+                                 update=":form" 
+                                 style="margin-top: 10px;" />
+
+                <p:commandButton value="Edit" 
+                                 styleClass="ui-button-raised ui-button-primary"
+                                 action="#{adminProducts.enableEditMode}"
+                                 update=":form"
+                                 icon="pi pi-pencil"
+                                 disabled="#{adminProducts.selectedProduct == null}"
+                                 style="margin-left: 10px;" />
+
+                <p:commandButton value="Delete" 
+                                 styleClass="ui-button-raised ui-button-danger"
+                                 action="#{adminProducts.delete}"
+                                 update=":form"
+                                 icon="pi pi-trash"
+                                 disabled="#{adminProducts.selectedProduct == null}"
+                                 style="margin-left: 10px;" />
+                </h:panelGroup>
+                <!-- Add/Edit Product Form -->
+                <!-- Add Product Form -->
+                <h:panelGrid columns="2">
+			    <h:panelGroup rendered="#{adminProducts.addMode}">
+			        <h2>Add Product</h2>
+			        
+			        <h:outputLabel for="name" value="Name:" />
+			        <h:inputText id="name" value="#{adminProducts.newProduct.name}" required="true" />
+			
+			        <h:outputLabel for="price" value="Price:" />
+			        <h:inputText id="price" value="#{adminProducts.newProduct.price}" required="true" />
+			
+			        <h:outputLabel for="quantity" value="Quantity:" />
+			        <h:inputText id="quantity" value="#{adminProducts.newProduct.quantity}" required="true" />
+			
+					<h:outputLabel for="sdr" value="Sdr:" />
+			        <h:inputText id="sdr" value="#{adminProducts.newProduct.sdr}" required="true" />
+			        
+			        <h:outputLabel for="category" value="Category:" />
+			        <h:selectOneMenu id="category" value="#{adminProducts.categoryId}">
+			            <f:selectItem itemLabel="Select Category" itemValue="" />
+			            <f:selectItems value="#{adminProducts.categories}" var="cat" itemLabel="#{cat.name}" itemValue="#{cat.id}" />
+			        </h:selectOneMenu>
+			
+			        <h:outputLabel for="photo" value="Product Photo:" />
+			        <p:fileUpload value="#{adminProducts.newProduct.photo}" mode="simple" />
+			
+			        <p:commandButton value="Save" action="#{adminProducts.add}" update=":form" />
+			        <p:commandButton value="Cancel" action="#{adminProducts.setAddMode(false)}" update=":form" />
+			    </h:panelGroup>
+			    
+			    <h:panelGroup rendered="#{adminProducts.editMode}">
+                        <h2>Edit Product</h2>
+
+                        <!-- Fields for Editing Product -->
+                        <h:outputLabel for="editName" value="Name:" />
+                        <h:inputText id="editName" value="#{adminProducts.selectedProduct.name}" required="true" />
+
+                        <h:outputLabel for="editPrice" value="Price:" />
+                        <h:inputText id="editPrice" value="#{adminProducts.selectedProduct.price}" required="true" />
+
+                        <h:outputLabel for="editQuantity" value="Quantity:" />
+                        <h:inputText id="editQuantity" value="#{adminProducts.selectedProduct.quantity}" required="true" />
+
+                        <h:outputLabel for="editSdr" value="Sdr:" />
+                        <h:inputText id="editSdr" value="#{adminProducts.selectedProduct.sdr}" required="true" />
+
+                        <h:outputLabel for="editCategory" value="Category:" />
+                        <h:selectOneMenu id="editCategory" value="#{adminProducts.selectedProduct.category.id}">
+                            <f:selectItem itemLabel="Select Category" itemValue="" />
+                            <f:selectItems value="#{adminProducts.categories}" var="cat" itemLabel="#{cat.name}" itemValue="#{cat.id}" />
+                        </h:selectOneMenu>
+
+                        <h:outputLabel for="editPhoto" value="Product Photo:" />
+                        <p:fileUpload value="#{adminProducts.selectedProduct.photo}" mode="simple" />
+
+                        <p:commandButton value="Save Changes" action="#{adminProducts.update}" update=":form" />
+                        <p:commandButton value="Cancel" action="#{adminProducts.setEditMode(false)}" update=":form" />
+                    </h:panelGroup>
+			    </h:panelGrid>
+
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+ 

@@ -44,68 +44,70 @@
                     <p:column headerText="Photo">
                          <p:graphicImage value="/resources#{prod.photo}" alt="Product Photo" style="width: 50px; height: 50px;" />
                     </p:column>
-                    
-                    
                 </p:dataTable>
-				                <!-- Action Buttons -->
+				
+                <!-- Action Buttons -->
                 <h:panelGroup styleClass="centered-buttons">
-                <p:commandButton value="Add" 
-                                 styleClass="ui-button-raised ui-button-flat"
-                                 actionListener="#{adminProducts.enableAddMode}" 
-                                 update=":form" 
-                                 style="margin-top: 10px;" />
+                    <p:commandButton value="Add" 
+                                     styleClass="ui-button-raised ui-button-flat"
+                                     actionListener="#{adminProducts.enableAddMode}" 
+                                     update=":form" 
+                                     style="margin-top: 10px;" />
 
-                <p:commandButton value="Edit" 
-                                 styleClass="ui-button-raised ui-button-primary"
-                                 action="#{adminProducts.enableEditMode}"
-                                 update=":form"
-                                 icon="pi pi-pencil"
-                                 disabled="#{adminProducts.selectedProduct == null}"
-                                 style="margin-left: 10px;" />
+                    <p:commandButton value="Edit" 
+                                     styleClass="ui-button-raised ui-button-primary"
+                                     action="#{adminProducts.enableEditMode}"
+                                     update=":form"
+                                     icon="pi pi-pencil"
+                                     disabled="#{adminProducts.selectedProduct == null}"
+                                     style="margin-left: 10px;" />
 
-                <p:commandButton value="Delete" 
-                                 styleClass="ui-button-raised ui-button-danger"
-                                 action="#{adminProducts.delete}"
-                                 update=":form"
-                                 icon="pi pi-trash"
-                                 disabled="#{adminProducts.selectedProduct == null}"
-                                 style="margin-left: 10px;" />
+                    <p:commandButton value="Delete" 
+                                     styleClass="ui-button-raised ui-button-danger"
+                                     action="#{adminProducts.delete}"
+                                     update=":form"
+                                     icon="pi pi-trash"
+                                     disabled="#{adminProducts.selectedProduct == null}"
+                                     style="margin-left: 10px;" />
                 </h:panelGroup>
-                <!-- Add/Edit Product Form -->
+                
                 <!-- Add Product Form -->
-                <h:panelGrid columns="2">
-			    <h:panelGroup rendered="#{adminProducts.addMode}">
-			        <h2>Add Product</h2>
-			        
-			        <h:outputLabel for="name" value="Name:" />
-			        <h:inputText id="name" value="#{adminProducts.newProduct.name}" required="true" />
-			
-			        <h:outputLabel for="price" value="Price:" />
-			        <h:inputText id="price" value="#{adminProducts.newProduct.price}" required="true" />
-			
-			        <h:outputLabel for="quantity" value="Quantity:" />
-			        <h:inputText id="quantity" value="#{adminProducts.newProduct.quantity}" required="true" />
-			
-					<h:outputLabel for="sdr" value="Sdr:" />
-			        <h:inputText id="sdr" value="#{adminProducts.newProduct.sdr}" required="true" />
-			        
-			        <h:outputLabel for="category" value="Category:" />
-			        <h:selectOneMenu id="category" value="#{adminProducts.categoryId}">
-			            <f:selectItem itemLabel="Select Category" itemValue="" />
-			            <f:selectItems value="#{adminProducts.categories}" var="cat" itemLabel="#{cat.name}" itemValue="#{cat.id}" />
-			        </h:selectOneMenu>
-			
-			        <h:outputLabel for="photo" value="Product Photo:" />
-			        <p:fileUpload value="#{adminProducts.newProduct.photo}" mode="simple" />
-			
-			        <p:commandButton value="Save" action="#{adminProducts.add}" update=":form" />
-			        <p:commandButton value="Cancel" action="#{adminProducts.setAddMode(false)}" update=":form" />
-			    </h:panelGroup>
-			    
-			    <h:panelGroup rendered="#{adminProducts.editMode}">
-                        <h2>Edit Product</h2>
+                <h:panelGroup rendered="#{adminProducts.addMode}">
+                    <h2>Add Product</h2>
+                    <h:panelGrid columns="2" style="margin-bottom: 10px;">
+                        <h:outputLabel for="name" value="Name:" />
+                        <h:inputText id="name" value="#{adminProducts.newProduct.name}" required="true" />
 
-                        <!-- Fields for Editing Product -->
+                        <h:outputLabel for="price" value="Price:" />
+                        <h:inputText id="price" value="#{adminProducts.newProduct.price}" required="true" />
+
+                        <h:outputLabel for="quantity" value="Quantity:" />
+                        <h:inputText id="quantity" value="#{adminProducts.newProduct.quantity}" required="true" />
+
+                        <h:outputLabel for="sdr" value="Sdr:" />
+                        <h:inputText id="sdr" value="#{adminProducts.newProduct.sdr}" required="true" />
+
+                        <h:outputLabel for="category" value="Category:" />
+                        <h:selectOneMenu id="category" value="#{adminProducts.categoryId}">
+                            <f:selectItem itemLabel="Select Category" itemValue="" />
+                            <f:selectItems value="#{adminProducts.categories}" var="cat" itemLabel="#{cat.name}" itemValue="#{cat.id}" />
+                        </h:selectOneMenu>
+
+                        <h:outputLabel for="photo" value="Product Photo:" />
+                        <p:fileUpload value="#{adminProducts.newProduct.photo}" mode="simple" />
+                    </h:panelGrid>
+                    <p:commandButton value="Save" action="#{adminProducts.add}" update=":form" />
+                     <p:commandButton value="Cancel" 
+				                         action="#{adminProducts.setAddMode(false)}" 
+				                         update=":form" 
+				                         styleClass="ui-button-raised ui-button-danger" 
+				                         style="margin-top: 10px;" />
+                </h:panelGroup>
+
+                <!-- Edit Product Form -->
+                <h:panelGroup rendered="#{adminProducts.editMode}">
+                    <h2>Edit Product</h2>
+                    <h:panelGrid columns="2" style="margin-bottom: 10px;">
                         <h:outputLabel for="editName" value="Name:" />
                         <h:inputText id="editName" value="#{adminProducts.selectedProduct.name}" required="true" />
 
@@ -126,14 +128,15 @@
 
                         <h:outputLabel for="editPhoto" value="Product Photo:" />
                         <p:fileUpload value="#{adminProducts.selectedProduct.photo}" mode="simple" />
-
-                        <p:commandButton value="Save Changes" action="#{adminProducts.update}" update=":form" />
-                        <p:commandButton value="Cancel" action="#{adminProducts.setEditMode(false)}" update=":form" />
-                    </h:panelGroup>
-			    </h:panelGrid>
-
+                    </h:panelGrid>
+                    <p:commandButton value="Save Changes" action="#{adminProducts.update}" update=":form" />
+                    <p:commandButton value="Cancel" 
+				                         action="#{adminProducts.setEditMode(false)}" 
+				                         update=":form" 
+				                         styleClass="ui-button-raised ui-button-danger" 
+				                         style="margin-top: 10px;" />
+                </h:panelGroup>
             </h:form>
         </div>
     </ui:define>
 </ui:composition>
- 
