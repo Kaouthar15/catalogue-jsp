@@ -61,6 +61,6 @@ public class Category {
 		this.description = description;
 	}
 	public String toString() {
-    	return "Category [id=" + id + ", name=" + name + ", description=" + description + "]";
+    	return name;
     }
 }

@@ -102,7 +102,7 @@ public class ProductService implements DAO<Product> {
         if (category != null) {
             product.setCategory(category);
         }
-        System.out.println(product + "   "+category);
+        System.out.println(product + "   " +category);
 
         session.persist(product);
         session.getTransaction().commit();
