@@ -197,6 +197,7 @@ public class AdminUsers {
         this.setNewUser(new User());
     }
     public void add() {
+    	System.out.println("add");
         newUser.setPhoto("/img/"+file.getFileName());  
         userService.add(newUser);
         this.addMode = false;
@@ -204,9 +205,7 @@ public class AdminUsers {
     }
 
     
-    public void upload(FileUploadEvent event) {
-    	System.out.println(event.getFile().getFileName());
-    }
+ 
 
     // Logic for updating the photo during editing
     public void updatePhoto() {

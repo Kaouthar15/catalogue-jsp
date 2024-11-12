@@ -44,13 +44,13 @@
                 <p:commandButton value="Add" 
                                  styleClass="ui-button-raised ui-button-flat"
                                  actionListener="#{adminUsers.enableAddMode}" 
-                                 update=":formAdd"  
+                                 update=":form"  
                                  style="margin-top: 10px;" />
 
                 <p:commandButton value="Edit" 
                                  styleClass="ui-button-raised ui-button-primary"
                                  action="#{adminUsers.enableEditMode}"
-                                 update=":formEdit"
+                                 update=":form"
                                  icon="pi pi-pencil"
                                  disabled="#{adminUsers.selectedUser == null}"
                                  style="margin-left: 10px;" />
@@ -64,15 +64,13 @@
                                  style="margin-left: 10px;" />
                 </h:panelGroup>
                 
-                </h:form>
                 
                 <br/>
                 
                 <!-- Add User Form -->
                 <h:panelGroup rendered="#{adminUsers.addMode}">
-                <h:form id="formAdd"  enctype="multipart/form-data">
                     <h:outputText value="Add a New User" styleClass="ui-widget-header" />
-
+					
                     <!-- User Form -->
                     <h:panelGrid columns="2">
                         <h:outputLabel for="name" value="Name:" />
@@ -86,7 +84,7 @@
                         
                         <h:outputLabel for="file" value="Photo:" />
 						<p:fileUpload id="file" value="#{adminUsers.file}"
-							fileUploadListener ="#{adminUsers.upload}"
+							
 							 mode="simple" accept=".jpg,.jpeg,.png" />
 				              
                     </h:panelGrid>
@@ -101,12 +99,10 @@
                                      update=":form"  
                                      styleClass="ui-button-raised ui-button-danger" 
                                      style="margin-top: 10px;" />
-                    </h:form>
                 </h:panelGroup>
 
                 <!-- Edit User Form -->
                 <h:panelGroup rendered="#{adminUsers.editMode}">
-                <h:form id="formEdit"  enctype="multipart/form-data">
                     <h:outputText value="Edit The User" styleClass="ui-widget-header" />
 
                     <!-- User Form -->
@@ -131,8 +127,9 @@
                                      update=":form" 
                                      styleClass="ui-button-raised ui-button-danger" 
                                      style="margin-top: 10px;" />
-                    </h:form>
+                    
                 </h:panelGroup>
+            </h:form>
         </div>
     </ui:define>
 </ui:composition>

@@ -3,14 +3,21 @@ package beans;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 
+import org.primefaces.model.file.UploadedFile;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import services.CategoryService;
 import services.ProductService;
 import models.Category;
 import models.Product;
-import net.bytebuddy.asm.Advice.This;
 
 @ManagedBean(name = "adminProducts") 
 @SessionScoped
@@ -28,9 +35,42 @@ public class AdminProducts {
     private boolean addMode = false;
     private boolean editMode = false;
     
+    private UploadedFile file;
 
+    
 
     // Getter and Setter methods
+    
+
+    public UploadedFile getFile() {
+		return file;
+	}
+
+	public void setFile(UploadedFile file) {
+		System.out.println("¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤ Calling setFile ¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤");
+		System.out.println(file.getFileName() + " " + file.getSize()); 
+		this.file = file; 
+		ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+		String path = servletContext.getRealPath("") + "resources" + File.separator + "img" + File.separator;
+		System.out.println(path);
+		try {
+			@SuppressWarnings("resource")
+			OutputStream outputStream = new FileOutputStream(path+file.getFileName()); 
+			InputStream inputStream = file.getInputStream();
+			 byte[] buffer = new byte[1024];
+		        int bytesRead;
+		        
+		        while ((bytesRead = inputStream.read(buffer)) != -1) {
+		        	outputStream.write(buffer, 0, bytesRead);
+		        }
+		        
+		        System.out.println("File successfully uploaded to " + path + file.getFileName());
+		} catch (Exception e) {
+			System.err.println("Error during file upload: " + e.getMessage());
+		}
+		
+	}
+	
     public List<Product> getProducts() {
         return products;
     }
@@ -130,7 +170,7 @@ public class AdminProducts {
 
     // Add a new product with the selected category
     public void add() {
-        
+    	newProduct.setPhoto("/img/"+file.getFileName());
         productService.add(newProduct,categoryId); 
         setAddMode(false); 
         list();

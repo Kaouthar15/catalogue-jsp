@@ -87,8 +87,10 @@
                         <h:outputLabel for="sdr" value="Sdr:" />
                         <h:inputText id="sdr" value="#{adminProducts.newProduct.sdr}" required="true" />
                         
-                        <h:outputLabel for="photo" value="Product Photo:" />
-                        <p:fileUpload value="#{adminProducts.newProduct.photo}" mode="simple" />
+                        <h:outputLabel for="file" value="Product Photo:" />
+                       <p:fileUpload id="file" value="#{adminProducts.file}"
+							
+							 mode="simple" accept=".jpg,.jpeg,.png" />
                         
                         <!-- select using categoryId (for add) -->
                         
