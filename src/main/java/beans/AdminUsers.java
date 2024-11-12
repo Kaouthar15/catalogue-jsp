@@ -197,7 +197,6 @@ public class AdminUsers {
         this.setNewUser(new User());
     }
     public void add() {
-    	System.out.println("add");
         newUser.setPhoto("/img/"+file.getFileName());  
         userService.add(newUser);
         this.addMode = false;
